@@ -1,0 +1,716 @@
+[
+    {
+        "SKU": "11545000000",
+        "Description-Heb": "מוסף : 45",
+        "Description-Eng": "Mussaf : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11550000000",
+        "Description-Heb": "מוסף : 50",
+        "Description-Eng": "Mussaf : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11555000000",
+        "Description-Heb": "מוסף : 55",
+        "Description-Eng": "Mussaf : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11560000000",
+        "Description-Heb": "מוסף : 60",
+        "Description-Eng": "Mussaf : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11570000000",
+        "Description-Heb": "מוסף : 70",
+        "Description-Eng": "Mussaf : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11580000000",
+        "Description-Heb": "מוסף : 80",
+        "Description-Eng": "Mussaf : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11645000000",
+        "Description-Heb": "תשבץ כסף כחול : 45",
+        "Description-Eng": "Tashbetz Silver Blue : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11650000000",
+        "Description-Heb": "תשבץ כסף כחול : 50",
+        "Description-Eng": "Tashbetz Silver Blue : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11655000000",
+        "Description-Heb": "תשבץ כסף כחול : 55",
+        "Description-Eng": "Tashbetz Silver Blue : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11660000000",
+        "Description-Heb": "תשבץ כסף כחול : 60",
+        "Description-Eng": "Tashbetz Silver Blue : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11670000000",
+        "Description-Heb": "תשבץ כסף כחול : 70",
+        "Description-Eng": "Tashbetz Silver Blue : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11680000000",
+        "Description-Heb": "תשבץ כסף כחול : 80",
+        "Description-Eng": "Tashbetz Silver Blue : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11745000000",
+        "Description-Heb": "תשבץ זהב כחול : 45",
+        "Description-Eng": "Tashbetz Gold Blue : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11750000000",
+        "Description-Heb": "תשבץ זהב כחול : 50",
+        "Description-Eng": "Tashbetz Gold Blue : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11755000000",
+        "Description-Heb": "תשבץ זהב כחול : 55",
+        "Description-Eng": "Tashbetz Gold Blue : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11760000000",
+        "Description-Heb": "תשבץ זהב כחול : 60",
+        "Description-Eng": "Tashbetz Gold Blue : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11770000000",
+        "Description-Heb": "תשבץ זהב כחול : 70",
+        "Description-Eng": "Tashbetz Gold Blue : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11780000000",
+        "Description-Heb": "תשבץ זהב כחול : 80",
+        "Description-Eng": "Tashbetz Gold Blue : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11845000000",
+        "Description-Heb": "ספיר אפור : 45",
+        "Description-Eng": "Sapir Grey : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11850000000",
+        "Description-Heb": "ספיר אפור : 50",
+        "Description-Eng": "Sapir Grey : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11855000000",
+        "Description-Heb": "ספיר אפור : 55",
+        "Description-Eng": "Sapir Grey : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11860000000",
+        "Description-Heb": "ספיר אפור : 60",
+        "Description-Eng": "Sapir Grey : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11870000000",
+        "Description-Heb": "ספיר אפור : 70",
+        "Description-Eng": "Sapir Grey : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11880000000",
+        "Description-Heb": "ספיר אפור : 80",
+        "Description-Eng": "Sapir Grey : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11945000000",
+        "Description-Heb": "ספיר חום : 45",
+        "Description-Eng": "Sapir Brown : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11950000000",
+        "Description-Heb": "ספיר חום : 50",
+        "Description-Eng": "Sapir Brown : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11955000000",
+        "Description-Heb": "ספיר חום : 55",
+        "Description-Eng": "Sapir Brown : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11960000000",
+        "Description-Heb": "ספיר חום : 60",
+        "Description-Eng": "Sapir Brown : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11970000000",
+        "Description-Heb": "ספיר חום : 70",
+        "Description-Eng": "Sapir Brown : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "11980000000",
+        "Description-Heb": "ספיר חום : 80",
+        "Description-Eng": "Sapir Brown : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12045000000",
+        "Description-Heb": "ספיר כחול : 45",
+        "Description-Eng": "Sapir Blue : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12050000000",
+        "Description-Heb": "ספיר כחול : 50",
+        "Description-Eng": "Sapir Blue : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12055000000",
+        "Description-Heb": "ספיר כחול : 55",
+        "Description-Eng": "Sapir Blue : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12060000000",
+        "Description-Heb": "ספיר כחול : 60",
+        "Description-Eng": "Sapir Blue : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12070000000",
+        "Description-Heb": "ספיר כחול : 70",
+        "Description-Eng": "Sapir Blue : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12080000000",
+        "Description-Heb": "ספיר כחול : 80",
+        "Description-Eng": "Sapir Blue : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12145000000",
+        "Description-Heb": "ספיר ברדו : 45",
+        "Description-Eng": "Sapir Bordeaux : 45",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12150000000",
+        "Description-Heb": "ספיר ברדו : 50",
+        "Description-Eng": "Sapir Bordeaux : 50",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12155000000",
+        "Description-Heb": "ספיר ברדו : 55",
+        "Description-Eng": "Sapir Bordeaux : 55",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12160000000",
+        "Description-Heb": "ספיר ברדו : 60",
+        "Description-Eng": "Sapir Bordeaux : 60",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12170000000",
+        "Description-Heb": "ספיר ברדו : 70",
+        "Description-Eng": "Sapir Bordeaux : 70",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    },
+    {
+        "SKU": "12180000000",
+        "Description-Heb": "ספיר ברדו : 80",
+        "Description-Eng": "Sapir Bordeaux : 80",
+        "Inventory": 0,
+        "Cost": 200,
+        "Price": 200,
+        "USDPrice": 60,
+        "MinimumLevel": 0,
+        "LastUpdate": {
+            "$date": "2025-03-05T12:37:52.139Z"
+        },
+        "Location": "B-92",
+        "SortOrder": {
+            "$numberLong": "0"
+        }
+    }
+]
