@@ -221,6 +221,43 @@ export async function icountInfo(req, res) {
 //     return data
 // }
 
+// Set production stats endpoints
+export async function getSetProductionDailyStats(req, res) {
+    try {
+        const { from, to, groupBy } = req.query
+        const filterBy = { from, to, groupBy }
+        const stats = await logService.getSetProductionDailyStats(filterBy)
+        res.json(stats)
+    } catch (err) {
+        logger.error('Failed to get set production daily stats', err)
+        res.status(500).send({ err: 'Failed to get set production daily stats' })
+    }
+}
+
+export async function getSetProductionTypeStats(req, res) {
+    try {
+        const { from, to, groupBy } = req.query
+        const filterBy = { from, to, groupBy }
+        const stats = await logService.getSetProductionTypeStats(filterBy)
+        res.json(stats)
+    } catch (err) {
+        logger.error('Failed to get set production type stats', err)
+        res.status(500).send({ err: 'Failed to get set production type stats' })
+    }
+}
+
+export async function getSetProductionMonthlyTotal(req, res) {
+    try {
+        const { from, to, groupBy } = req.query
+        const filterBy = { from, to, groupBy }
+        const total = await logService.getSetProductionMonthlyTotal(filterBy)
+        res.json({ totalSets: total })
+    } catch (err) {
+        logger.error('Failed to get set production monthly total', err)
+        res.status(500).send({ err: 'Failed to get set production monthly total' })
+    }
+}
+
 function getDate(){
     return new Date()
 }

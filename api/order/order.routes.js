@@ -1,5 +1,5 @@
 import express from 'express'
-import { getOrders, getOrderById, updateInventory, updateInventoryBySKU, addNewProduct, getproductsByType, updateBulkInventory, getproductSizes, icountInfo } from './order.controller.js'
+import { getOrders, getOrderById, updateInventory, updateInventoryBySKU, addNewProduct, getproductsByType, updateBulkInventory, getproductSizes, icountInfo, getSetProductionDailyStats, getSetProductionTypeStats, getSetProductionMonthlyTotal } from './order.controller.js'
 
 export const orderRoutes = express.Router()
 
@@ -12,4 +12,9 @@ orderRoutes.put('/bulk', updateBulkInventory)
 orderRoutes.put('/:SKU', updateInventoryBySKU)
 orderRoutes.post('/new', addNewProduct)
 orderRoutes.post('/icount', icountInfo)
+
+// Set production stats routes
+orderRoutes.get('/logs/production/daily', getSetProductionDailyStats)
+orderRoutes.get('/logs/production/type', getSetProductionTypeStats)
+orderRoutes.get('/logs/production/total', getSetProductionMonthlyTotal)
 

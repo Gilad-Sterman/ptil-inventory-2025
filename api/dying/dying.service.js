@@ -58,7 +58,11 @@ async function getDyingAggregatedData(collection, criteria, groupBy) {
                                 month: { $month: "$Date" },
                                 day: { $dayOfMonth: "$Date" }
                             },
-                            totalSets: { $sum: "$sets" },
+                            totalSets: { 
+                                $sum: {
+                                    $cond: [{ $eq: ["$redye", false] }, "$sets", 0]
+                                }
+                            },
                             totalDye: { $sum: "$dye" },
                             totalDithionite: { $sum: "$dithionite" },
                             totalDolelot: { $sum: "$dolelot" },
@@ -86,7 +90,11 @@ async function getDyingAggregatedData(collection, criteria, groupBy) {
                     {
                         $group: {
                             _id: "$type",
-                            totalSets: { $sum: "$sets" },
+                            totalSets: { 
+                                $sum: {
+                                    $cond: [{ $eq: ["$redye", false] }, "$sets", 0]
+                                }
+                            },
                             totalDye: { $sum: "$dye" },
                             totalDithionite: { $sum: "$dithionite" },
                             totalDolelot: { $sum: "$dolelot" },
@@ -118,7 +126,11 @@ async function getDyingAggregatedData(collection, criteria, groupBy) {
                                 year: { $year: "$Date" },
                                 month: { $month: "$Date" }
                             },
-                            totalSets: { $sum: "$sets" },
+                            totalSets: { 
+                                $sum: {
+                                    $cond: [{ $eq: ["$redye", false] }, "$sets", 0]
+                                }
+                            },
                             totalDye: { $sum: "$dye" },
                             totalDithionite: { $sum: "$dithionite" },
                             totalDolelot: { $sum: "$dolelot" },
