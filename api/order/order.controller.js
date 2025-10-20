@@ -258,6 +258,16 @@ export async function getSetProductionMonthlyTotal(req, res) {
     }
 }
 
+export async function getDyePowderInventory(req, res) {
+    try {
+        const inventory = await orderService.getDyePowderInventory()
+        res.json({ inventory })
+    } catch (err) {
+        logger.error('Failed to get dye powder inventory', err)
+        res.status(500).send({ err: 'Failed to get dye powder inventory' })
+    }
+}
+
 function getDate(){
     return new Date()
 }

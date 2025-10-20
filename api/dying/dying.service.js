@@ -8,11 +8,12 @@ import { orderService } from '../order/order.service.js'
 export const dyingService = {
     query,
     add,
+    getAvailableSetTypes,
     // getById,
 }
 
 async function query(filterBy = { User: 'Admin' }) {
-    const { User, from, to, type, groupBy } = filterBy
+    const { User, from, to, type, groupBy, setType } = filterBy
     try {
         const criteria = {}
         
@@ -23,11 +24,18 @@ async function query(filterBy = { User: 'Admin' }) {
         if (from || to) {
             criteria.Date = {}
             if (from) criteria.Date.$gte = new Date(from)
-            if (to) criteria.Date.$lte = new Date(to)
+            if (to) {
+                const toDate = new Date(to)
+                toDate.setHours(23, 59, 59, 999) // Include the entire end date
+                criteria.Date.$lte = toDate
+            }
         }
         
         // Type filter
         if (type && type !== 'all') criteria.type = type
+        
+        // Set type filter
+        if (setType && setType !== 'all') criteria.type = setType
         
         const collection = await dbService.getCollection('Production_Dyeing')
         
@@ -184,5 +192,15 @@ async function decrementDyePowder(dye_Kg) {
         logger.error('cannot decrement dye powder', err)
         throw err
     }
+}
 
+async function getAvailableSetTypes() {
+    try {
+        const collection = await dbService.getCollection('Production_Dyeing')
+        const setTypes = await collection.distinct('type')
+        return setTypes.filter(type => type && type.trim() !== '')
+    } catch (err) {
+        logger.error('cannot get available set types', err)
+        throw err
+    }
 }

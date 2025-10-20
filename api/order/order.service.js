@@ -299,6 +299,16 @@ async function getData(sku) {
     }
 }
 
+async function getDyePowderInventory() {
+    try {
+        const dyePowder = await getBySKU('10000000030')
+        return dyePowder ? dyePowder.Inventory : 0
+    } catch (err) {
+        logger.error('cannot get dye powder inventory', err)
+        throw err
+    }
+}
+
 export const orderService = {
     query,
     getById,
@@ -309,5 +319,6 @@ export const orderService = {
     setInventory,
     add,
     newOrderFromIcount,
-    addNewProduct
+    addNewProduct,
+    getDyePowderInventory
 }

@@ -21,7 +21,11 @@ async function query(filterBy = { User: 'Admin' }) {
         if (from || to) {
             criteria.Date = {}
             if (from) criteria.Date.$gte = new Date(from)
-            if (to) criteria.Date.$lte = new Date(to)
+            if (to) {
+                const toDate = new Date(to)
+                toDate.setHours(23, 59, 59, 999) // Include the entire end date
+                criteria.Date.$lte = toDate
+            }
         }
         
         // Type filter

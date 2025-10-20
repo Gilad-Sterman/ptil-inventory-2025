@@ -3,7 +3,7 @@ import { logService } from "../order/log.service.js";
 import { dyingService } from "./dying.service.js"
 
 export async function getDyingInfo(req, res) {
-    const { User, from, to, type, groupBy } = req.query
+    const { User, from, to, type, groupBy, setType } = req.query
 
     try {
         const filterBy = {
@@ -11,7 +11,8 @@ export async function getDyingInfo(req, res) {
             from: from ? new Date(from) : null,
             to: to ? new Date(to) : null,
             type: type || null,
-            groupBy: groupBy || null
+            groupBy: groupBy || null,
+            setType: setType || null
         }
         const dyeOptions = await dyingService.query(filterBy)
         res.json(dyeOptions)
@@ -41,5 +42,15 @@ export async function addDyingEvent(req, res) {
     } catch (err) {
         logger.error('Failed to add event', err)
         res.status(500).send({ err: 'Failed to add event' })
+    }
+}
+
+export async function getAvailableSetTypes(req, res) {
+    try {
+        const setTypes = await dyingService.getAvailableSetTypes()
+        res.json(setTypes)
+    } catch (err) {
+        logger.error('Failed to get available set types', err)
+        res.status(500).send({ err: 'Failed to get available set types' })
     }
 }
