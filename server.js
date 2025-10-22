@@ -42,6 +42,8 @@ import { setupSocketAPI } from './services/socket.service.js'
 import { orderRoutes } from './api/order/order.routes.js'
 import { dyingRoutes } from './api/dying/dying.routes.js'
 import { shziraRoutes } from './api/shzira/shzira.routes.js'
+import { permissionsRoutes } from './api/permissions/permissions.routes.js'
+import { userRoutes } from './api/user/user.routes.js'
 
 import { setupAsyncLocalStorage } from './middlewares/setupAls.middleware.js'
 app.all('*', setupAsyncLocalStorage)
@@ -49,6 +51,8 @@ app.all('*', setupAsyncLocalStorage)
 app.use('/api/order', orderRoutes)
 app.use('/api/dying', dyingRoutes)
 app.use('/api/shzira', shziraRoutes)
+app.use('/api/permissions', permissionsRoutes)
+app.use('/api/user', userRoutes)
 setupSocketAPI(server)
 
 

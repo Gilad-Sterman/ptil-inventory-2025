@@ -46,3 +46,19 @@ export async function updateUser(req, res) {
         res.status(500).send({ err: 'Failed to update user' })
     }
 }
+
+export async function loginUser(req, res) {
+    try {
+        const { username } = req.body
+        
+        if (!username) {
+            return res.status(400).json({ err: 'Username is required' })
+        }
+        
+        const user = await userService.getByUsername(username)
+        res.json(user)
+    } catch (err) {
+        logger.error('Failed to login user', err)
+        res.status(500).json({ err: 'Failed to login user' })
+    }
+}

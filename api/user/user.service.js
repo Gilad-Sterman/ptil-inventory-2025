@@ -1,5 +1,6 @@
 import { dbService } from '../../services/db.service.js'
 import { logger } from '../../services/logger.service.js'
+import { permissionsService } from '../permissions/permissions.service.js'
 
 import mongodb from 'mongodb'
 const { ObjectId } = mongodb
@@ -8,6 +9,7 @@ export const userService = {
     query,
     getById,
     getByEmail,
+    getByUsername,
     remove,
     update,
     add
@@ -51,6 +53,26 @@ async function getByEmail(email) {
         return user
     } catch (err) {
         logger.error(`while finding user ${email}`, err)
+        throw err
+    }
+}
+
+async function getByUsername(username) {
+    try {
+        // For now, create a simple user object since we don't have a users collection
+        // In a real app, you'd query the users collection here
+        const user = {
+            username: username.toLowerCase(),
+            fullname: username
+        }
+        
+        // Get user permissions
+        const userPermissions = await permissionsService.getUserPermissions(username)
+        user.permissions = userPermissions.permissions
+        
+        return user
+    } catch (err) {
+        logger.error(`while finding user ${username}`, err)
         throw err
     }
 }
