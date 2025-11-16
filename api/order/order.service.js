@@ -309,6 +309,280 @@ async function getDyePowderInventory() {
     }
 }
 
+async function getSalesByMonthAndStore(filterBy) {
+    try {
+        const { from, to, groupBy = 'monthly' } = filterBy
+        const collection = await dbService.getCollection('orders')
+        
+        // Create match criteria for doctype filter and date range
+        const matchCriteria = {
+            doctype: { $in: ['invrec', 'invoice'] },
+            date: {
+                $gte: new Date(from),
+                $lte: new Date(to)
+            }
+        }
+
+        let groupStage
+        let projectStage
+        let sortStage
+
+        if (groupBy === 'weekly') {
+            // Group by week
+            groupStage = {
+                $group: {
+                    _id: {
+                        year: { $year: '$date' },
+                        week: { $week: '$date' },
+                        store: '$store'
+                    },
+                    totalRevenue: { $sum: '$total' },
+                    totalRevenueDollars: { 
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$totalDollars', -1] },
+                                0,
+                                '$totalDollars'
+                            ]
+                        }
+                    },
+                    orderCount: { $sum: 1 },
+                    // Keep a sample date from this week to calculate week start
+                    sampleDate: { $first: '$date' }
+                }
+            }
+            
+            projectStage = {
+                $project: {
+                    _id: 0,
+                    year: '$_id.year',
+                    week: '$_id.week',
+                    store: '$_id.store',
+                    totalRevenue: 1,
+                    totalRevenueDollars: 1,
+                    orderCount: 1,
+                    sampleDate: 1
+                }
+            }
+            
+            sortStage = { $sort: { year: 1, week: 1, store: 1 } }
+        } else {
+            // Group by month (default)
+            groupStage = {
+                $group: {
+                    _id: {
+                        year: { $year: '$date' },
+                        month: { $month: '$date' },
+                        store: '$store'
+                    },
+                    totalRevenue: { $sum: '$total' },
+                    totalRevenueDollars: { 
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$totalDollars', -1] },
+                                0,
+                                '$totalDollars'
+                            ]
+                        }
+                    },
+                    orderCount: { $sum: 1 }
+                }
+            }
+            
+            projectStage = {
+                $project: {
+                    _id: 0,
+                    year: '$_id.year',
+                    month: '$_id.month',
+                    store: '$_id.store',
+                    totalRevenue: 1,
+                    totalRevenueDollars: 1,
+                    orderCount: 1
+                }
+            }
+            
+            sortStage = { $sort: { year: 1, month: 1, store: 1 } }
+        }
+
+        const pipeline = [
+            { $match: matchCriteria },
+            groupStage,
+            projectStage,
+            sortStage
+        ]
+
+        const results = await collection.aggregate(pipeline).toArray()
+        
+        // If weekly grouping, calculate the Sunday date for each week
+        if (groupBy === 'weekly') {
+            return results.map(item => {
+                // Calculate the Sunday of the week using the sample date
+                const sampleDate = new Date(item.sampleDate)
+                const dayOfWeek = sampleDate.getDay() // 0 = Sunday, 1 = Monday, etc.
+                const daysToSubtract = dayOfWeek // Days to go back to Sunday
+                
+                const weekStart = new Date(sampleDate)
+                weekStart.setDate(sampleDate.getDate() - daysToSubtract)
+                
+                return {
+                    ...item,
+                    weekStart: weekStart
+                }
+            })
+        }
+        
+        return results
+    } catch (err) {
+        logger.error('cannot get sales by month and store', err)
+        throw err
+    }
+}
+
+async function getSetsSalesByMonthAndStore(filterBy) {
+    try {
+        const { from, to, groupBy = 'monthly' } = filterBy
+        const collection = await dbService.getCollection('orders')
+        
+        // Create match criteria for doctype filter, date range, and valid ptil
+        const matchCriteria = {
+            doctype: { $in: ['invrec', 'invoice'] },
+            date: {
+                $gte: new Date(from),
+                $lte: new Date(to)
+            },
+            // Filter for orders with valid ptil data
+            $or: [
+                { 'data.ptil.code': { $gt: 0 } },
+                { 
+                    'data.ptil.name': { 
+                        $exists: true, 
+                        $ne: '', 
+                        $ne: null, 
+                        $ne: 0 
+                    } 
+                }
+            ]
+        }
+
+        let groupStage
+        let projectStage
+        let sortStage
+
+        if (groupBy === 'weekly') {
+            // Group by week
+            groupStage = {
+                $group: {
+                    _id: {
+                        year: { $year: '$date' },
+                        week: { $week: '$date' },
+                        store: '$store'
+                    },
+                    totalRevenue: { $sum: '$total' },
+                    totalRevenueDollars: { 
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$totalDollars', -1] },
+                                0,
+                                '$totalDollars'
+                            ]
+                        }
+                    },
+                    orderCount: { $sum: 1 },
+                    setsCount: { $sum: '$quantity' },
+                    // Keep a sample date from this week to calculate week start
+                    sampleDate: { $first: '$date' }
+                }
+            }
+            
+            projectStage = {
+                $project: {
+                    _id: 0,
+                    year: '$_id.year',
+                    week: '$_id.week',
+                    store: '$_id.store',
+                    totalRevenue: 1,
+                    totalRevenueDollars: 1,
+                    orderCount: 1,
+                    setsCount: 1,
+                    sampleDate: 1
+                }
+            }
+            
+            sortStage = { $sort: { year: 1, week: 1, store: 1 } }
+        } else {
+            // Group by month (default)
+            groupStage = {
+                $group: {
+                    _id: {
+                        year: { $year: '$date' },
+                        month: { $month: '$date' },
+                        store: '$store'
+                    },
+                    totalRevenue: { $sum: '$total' },
+                    totalRevenueDollars: { 
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$totalDollars', -1] },
+                                0,
+                                '$totalDollars'
+                            ]
+                        }
+                    },
+                    orderCount: { $sum: 1 },
+                    setsCount: { $sum: '$quantity' }
+                }
+            }
+            
+            projectStage = {
+                $project: {
+                    _id: 0,
+                    year: '$_id.year',
+                    month: '$_id.month',
+                    store: '$_id.store',
+                    totalRevenue: 1,
+                    totalRevenueDollars: 1,
+                    orderCount: 1,
+                    setsCount: 1
+                }
+            }
+            
+            sortStage = { $sort: { year: 1, month: 1, store: 1 } }
+        }
+
+        const pipeline = [
+            { $match: matchCriteria },
+            groupStage,
+            projectStage,
+            sortStage
+        ]
+
+        const results = await collection.aggregate(pipeline).toArray()
+        
+        // If weekly grouping, calculate the Sunday date for each week
+        if (groupBy === 'weekly') {
+            return results.map(item => {
+                // Calculate the Sunday of the week using the sample date
+                const sampleDate = new Date(item.sampleDate)
+                const dayOfWeek = sampleDate.getDay() // 0 = Sunday, 1 = Monday, etc.
+                const daysToSubtract = dayOfWeek // Days to go back to Sunday
+                
+                const weekStart = new Date(sampleDate)
+                weekStart.setDate(sampleDate.getDate() - daysToSubtract)
+                
+                return {
+                    ...item,
+                    weekStart: weekStart
+                }
+            })
+        }
+        
+        return results
+    } catch (err) {
+        logger.error('cannot get sets sales by month and store', err)
+        throw err
+    }
+}
+
 export const orderService = {
     query,
     getById,
@@ -320,5 +594,7 @@ export const orderService = {
     add,
     newOrderFromIcount,
     addNewProduct,
-    getDyePowderInventory
+    getDyePowderInventory,
+    getSalesByMonthAndStore,
+    getSetsSalesByMonthAndStore
 }

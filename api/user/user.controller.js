@@ -49,13 +49,31 @@ export async function updateUser(req, res) {
 
 export async function loginUser(req, res) {
     try {
-        const { username } = req.body
+        const { username, adminPassword } = req.body
         
         if (!username) {
             return res.status(400).json({ err: 'Username is required' })
         }
         
         const user = await userService.getByUsername(username)
+        
+        // Check if user is admin and validate admin password
+        if (user && user.permissions && user.permissions.roles && user.permissions.roles.includes('admin')) {
+            if (!adminPassword) {
+                return res.status(401).json({ err: 'Admin password required', requiresAdminPassword: true })
+            }
+            
+            const correctAdminPassword = process.env.ADMIN_PASSWORD
+            if (!correctAdminPassword) {
+                logger.error('ADMIN_PASSWORD environment variable not set')
+                return res.status(500).json({ err: 'Server configuration error' })
+            }
+            
+            if (adminPassword !== correctAdminPassword) {
+                return res.status(401).json({ err: 'Invalid admin password' })
+            }
+        }
+        
         res.json(user)
     } catch (err) {
         logger.error('Failed to login user', err)

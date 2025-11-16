@@ -268,6 +268,30 @@ export async function getDyePowderInventory(req, res) {
     }
 }
 
+export async function getSalesByMonthAndStore(req, res) {
+    try {
+        const { from, to, groupBy } = req.query
+        const filterBy = { from, to, groupBy }
+        const salesData = await orderService.getSalesByMonthAndStore(filterBy)
+        res.json(salesData)
+    } catch (err) {
+        logger.error('Failed to get sales by month and store', err)
+        res.status(500).send({ err: 'Failed to get sales by month and store' })
+    }
+}
+
+export async function getSetsSalesByMonthAndStore(req, res) {
+    try {
+        const { from, to, groupBy } = req.query
+        const filterBy = { from, to, groupBy }
+        const setsData = await orderService.getSetsSalesByMonthAndStore(filterBy)
+        res.json(setsData)
+    } catch (err) {
+        logger.error('Failed to get sets sales by month and store', err)
+        res.status(500).send({ err: 'Failed to get sets sales by month and store' })
+    }
+}
+
 function getDate(){
     return new Date()
 }
