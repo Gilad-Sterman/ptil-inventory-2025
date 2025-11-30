@@ -3,7 +3,7 @@ const { ObjectId } = mongodb
 
 import { dbService } from '../../services/db.service.js'
 import { logger } from '../../services/logger.service.js'
-import { BEGGED, STRING, TYING } from '../../services/info.service.js'
+import { BEGGED, STRING, TYING, COLOR, isTalitGadol } from '../../services/info.service.js'
 
 
 async function query(filterBy = { txt: '' }) {
@@ -117,7 +117,13 @@ async function getByType(type) {
             criteria.SKU = { $regex: new RegExp('^100.{2}0000.{2}') }
         }
         if (type === 'begged') {
-            criteria.SKU = { $regex: new RegExp('000000$') }
+            // Look for products that have begged codes but are not strings (don't start with 10000)
+            // and are not pure "other" products (don't start with 100XX where XX is size)
+            criteria['$and'] = [
+                { SKU: { $regex: new RegExp('^1[0-9]{2}[0-9]{2}') } }, // Starts with 1 + begged + size
+                { SKU: { $not: { $regex: new RegExp('^10000') } } }, // Not strings
+                { SKU: { $not: { $regex: new RegExp('^100[0-9]{2}0000') } } } // Not pure other products
+            ]
         }
         const collection = await dbService.getCollection('inventory')
         let products = await collection.find(criteria).toArray()
@@ -135,13 +141,53 @@ async function getSizes(type, code) {
             criteria.SKU = { $regex: new RegExp(`^100.{2}0000${code}`) }
         }
         if (type === 'begged') {
-            criteria.SKU = { $regex: new RegExp(`^1${code}.{2}000000$`) }
+            // Find products that start with 1 + begged code + any size, regardless of strings/tying/color
+            criteria.SKU = { $regex: new RegExp(`^1${code}[0-9]{2}`) }
         }
         const collection = await dbService.getCollection('inventory')
         let products = await collection.find(criteria).toArray()
+        
+        // Extract unique sizes from the products for begged type
+        if (type === 'begged') {
+            const uniqueSizes = [...new Set(products.map(product => product.SKU.substring(3, 5)))]
+            // Convert back to product-like objects for consistency with frontend expectations
+            return uniqueSizes.map(size => ({
+                SKU: `1${code}${size}000000`, // Dummy SKU for size extraction
+                'Description-Heb': `Size ${size}`,
+                'Description-Eng': `Size ${size}`
+            }))
+        }
+        
         return products
     } catch (err) {
         logger.error('cannot find products', err)
+        throw err
+    }
+}
+
+async function getColors(begged, size) {
+    try {
+        // Only get colors for TG products that have both begged and size
+        if (!isTalitGadol(begged) || !begged || !size) {
+            return []
+        }
+        
+        // Find products that match begged and size pattern, regardless of strings/tying, with color codes (not 00)
+        const criteria = {
+            SKU: { 
+                $regex: new RegExp(`^1${begged}${size}.{4}[5-6][0-9]$`) 
+            }
+        }
+        
+        const collection = await dbService.getCollection('inventory')
+        let products = await collection.find(criteria).toArray()
+        
+        // Extract unique color codes from the last 2 digits of SKU
+        const colorCodes = [...new Set(products.map(product => product.SKU.slice(-2)))]
+        
+        return colorCodes
+    } catch (err) {
+        logger.error('cannot find colors', err)
         throw err
     }
 }
@@ -204,19 +250,53 @@ async function setInventory(product) {
 }
 
 async function add(productSKU, amount) {
-    const beggedHeb = BEGGED.find(begged => begged.code === productSKU.substring(1, 3)).heb
-    const beggedEng = BEGGED.find(begged => begged.code === productSKU.substring(1, 3)).eng
+    const beggedCode = productSKU.substring(1, 3)
+    console.log(`DEBUG add: SKU=${productSKU}, beggedCode=${beggedCode}`)
+    
+    const beggedItem = BEGGED.find(begged => begged.code === beggedCode)
+    const stringCode = productSKU.substring(5, 7)
+    const tyingCode = productSKU.substring(7, 9)
+    const stringItem = STRING.find(string => string.code === stringCode)
+    const tyingItem = TYING.find(tying => tying.code === tyingCode)
+    
+    console.log(`DEBUG add: beggedItem found=${!!beggedItem}, stringItem found=${!!stringItem}, tyingItem found=${!!tyingItem}`)
+    
+    if (!beggedItem) {
+        throw new Error(`Begged code ${beggedCode} not found in BEGGED array`)
+    }
+    if (!stringItem) {
+        throw new Error(`String code ${stringCode} not found in STRING array`)
+    }
+    if (!tyingItem) {
+        throw new Error(`Tying code ${tyingCode} not found in TYING array`)
+    }
+    
+    const beggedHeb = beggedItem.heb
+    const beggedEng = beggedItem.eng
     const sizeCode = productSKU.substring(3, 5)
-    const stringHeb = STRING.find(string => string.code === productSKU.substring(5, 7)).heb
-    const stringEng = STRING.find(string => string.code === productSKU.substring(5, 7)).eng
-    const tyingHeb = TYING.find(tying => tying.code === productSKU.substring(7, 9)).heb
-    const tyingEng = TYING.find(tying => tying.code === productSKU.substring(7, 9)).eng
+    const stringHeb = stringItem.heb
+    const stringEng = stringItem.eng
+    const tyingHeb = tyingItem.heb
+    const tyingEng = tyingItem.eng
+    
+    // Handle color for TG products only (but not for base products with 0000 strings/tying)
+    const colorCode = productSKU.substring(9, 11)
+    const isBaseProduct = stringCode === '00' && tyingCode === '00'
+    let colorHeb = '', colorEng = ''
+    
+    if (isTalitGadol(beggedCode) && colorCode !== '00' && !isBaseProduct) {
+        const colorInfo = COLOR.find(color => color.code === colorCode)
+        if (colorInfo) {
+            colorHeb = ` - ${colorInfo.heb}`
+            colorEng = ` - ${colorInfo.eng}`
+        }
+    }
 
     try {
         const productToAdd = {
             SKU: productSKU,
-            'Description-Heb': `${beggedHeb}: ${sizeCode} : ${stringHeb} : ${tyingHeb}`,
-            'Description-Eng': `${beggedEng}: ${sizeCode} : ${stringEng} : ${tyingEng}`,
+            'Description-Heb': `${beggedHeb}${colorHeb}: ${sizeCode} : ${stringHeb} : ${tyingHeb}`,
+            'Description-Eng': `${beggedEng}${colorEng}: ${sizeCode} : ${stringEng} : ${tyingEng}`,
             'Inventory': amount,
             'Cost': -0.1,
             'Price': -0.1,
@@ -274,22 +354,47 @@ async function getData(sku) {
             beged: { code: -1, name: '' },
             size: { code: -1, name: '' },
             ptil: { code: -1, name: '' },
-            tying: { code: -1, name: '' }
+            tying: { code: -1, name: '' },
+            color: { code: -1, name: '' }
         }
         if (sku) {
             const collection = await dbService.getCollection('MongoDataCodes')
             const bName = await collection.findOne({ '$and': [{ Type: 'beged' }, { Code: parseInt(sku.substring(1, 3)) }] })
             const pName = await collection.findOne({ '$and': [{ Type: 'ptil' }, { Code: parseInt(sku.substring(5, 7)) }] })
             const tName = await collection.findOne({ '$and': [{ Type: 'tying' }, { Code: parseInt(sku.substring(7, 9)) }] })
+            
+            // Handle color for TG products only
+            const beggedCode = sku.substring(1, 3)
+            let cName = null
+            if (isTalitGadol(beggedCode)) {
+                const colorCode = parseInt(sku.substring(9, 11))
+                console.log(`DEBUG getData: TG product detected. SKU: ${sku}, beggedCode: ${beggedCode}, colorCode: ${colorCode}`)
+                
+                if (colorCode >= 50 && colorCode <= 62) {
+                    console.log(`DEBUG getData: Looking for color with Code: ${colorCode}`)
+                    cName = await collection.findOne({ '$and': [{ Type: 'color' }, { Code: colorCode }] })
+                    console.log(`DEBUG getData: Color lookup result:`, cName)
+                } else {
+                    console.log(`DEBUG getData: Color code ${colorCode} is outside valid range (50-62)`)
+                }
+            }
 
-            data.beged.name = bName['item-Heb']
+            data.beged.name = bName ? bName['item-Heb'] : 'Unknown'
             data.beged.code = parseInt(sku.substring(1, 3))
             data.size.code = parseInt(sku.substring(3, 5))
             data.size.name = parseInt(sku.substring(3, 5))
-            data.ptil.name = pName['item-Heb']
+            data.ptil.name = pName ? pName['item-Heb'] : 'Unknown'
             data.ptil.code = parseInt(sku.substring(5, 7))
-            data.tying.name = tName['item-Heb']
+            data.tying.name = tName ? tName['item-Heb'] : 'Unknown'
             data.tying.code = parseInt(sku.substring(7, 9))
+            
+            if (cName) {
+                console.log(`DEBUG getData: Setting color data from DB: ${cName['item-Heb']}`)
+                data.color.name = cName['item-Heb']
+                data.color.code = parseInt(sku.substring(9, 11))
+            } else if (isTalitGadol(beggedCode)) {
+                console.log(`DEBUG getData: WARNING - Color not found for TG product! SKU: ${sku}, colorCode: ${parseInt(sku.substring(9, 11))}`)
+            }
         }
 
         return data
@@ -451,17 +556,7 @@ async function getSetsSalesByMonthAndStore(filterBy) {
                 $lte: new Date(to)
             },
             // Filter for orders with valid ptil data
-            $or: [
-                { 'data.ptil.code': { $gt: 0 } },
-                { 
-                    'data.ptil.name': { 
-                        $exists: true, 
-                        $ne: '', 
-                        $ne: null, 
-                        $ne: 0 
-                    } 
-                }
-            ]
+            'data.ptil.code': { $gt: 0 }
         }
 
         let groupStage
@@ -589,6 +684,7 @@ export const orderService = {
     getBySKU,
     getByType,
     getSizes,
+    getColors,
     updateInventory,
     setInventory,
     add,
