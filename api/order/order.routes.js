@@ -1,12 +1,13 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../../middlewares/requireAuth.middleware.js'
-import { getOrders, getOrderById, getproductsByType, getproductSizes, updateInventory, updateInventoryBySKU, addNewProduct, updateBulkInventory, icountInfo, getSetProductionDailyStats, getSetProductionTypeStats, getSetProductionMonthlyTotal, getDyePowderInventory, getSalesByMonthAndStore, getSetsSalesByMonthAndStore } from './order.controller.js'
+import { getOrders, getOrderById, getproductsByType, getproductSizes, getproductColors, updateInventory, updateInventoryBySKU, addNewProduct, updateBulkInventory, icountInfo, getSetProductionDailyStats, getSetProductionTypeStats, getSetProductionMonthlyTotal, getDyePowderInventory, getSalesByMonthAndStore, getSetsSalesByMonthAndStore } from './order.controller.js'
 
 export const orderRoutes = express.Router()
 
 orderRoutes.get('/', getOrders)
 // orderRoutes.get('/:id', getOrderById)
 orderRoutes.get('/size', getproductSizes)
+orderRoutes.get('/colors', getproductColors)
 orderRoutes.get('/:type', getproductsByType)
 orderRoutes.put('/', updateInventory)
 orderRoutes.put('/bulk', updateBulkInventory)

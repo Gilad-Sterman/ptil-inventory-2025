@@ -66,6 +66,19 @@ export async function getproductSizes(req, res) {
     }
 }
 
+export async function getproductColors(req, res) {
+    try {
+        const begged = req.query.begged
+        const size = req.query.size
+        logger.debug(`Getting colors for begged ${begged}, size ${size}`)
+        const colorCodes = await orderService.getColors(begged, size)
+        res.json(colorCodes)
+    } catch (err) {
+        logger.error('Failed to get colors', err)
+        res.status(500).send({ err: 'Failed to get colors' })
+    }
+}
+
 export async function getOrderById(req, res) {
     try {
         const orderId = req.params.id
@@ -80,9 +93,14 @@ export async function getOrderById(req, res) {
 export async function updateInventory(req, res) {
     try {
         const { productSKU, stringSKU, beggedSKU, amount, loggedUser } = req.body
-        const string = await orderService.getBySKU(stringSKU)
-        const begged = await orderService.getBySKU(beggedSKU)
+        console.log(`DEBUG updateInventory: productSKU=${productSKU}, stringSKU=${stringSKU}, beggedSKU=${beggedSKU}`)
+        
+        let string = await orderService.getBySKU(stringSKU)
+        let begged = await orderService.getBySKU(beggedSKU)
         const product = await orderService.getBySKU(productSKU)
+        
+        console.log(`DEBUG updateInventory: string found=${!!string}, begged found=${!!begged}, product found=${!!product}`)
+        
         let updatedProduct
         if (!product) {
             updatedProduct = await orderService.add(productSKU, +amount)
@@ -90,11 +108,25 @@ export async function updateInventory(req, res) {
         } else {
             updatedProduct = await orderService.updateInventory(product, +amount)
         }
+        
+        if (!begged) {
+            console.log(`WARNING: begged product with SKU ${beggedSKU} not found! Creating it...`)
+            begged = await orderService.add(beggedSKU, 100) // Create with starting inventory of 100
+            console.log(`Created begged product:`, begged)
+        }
+        
+        if (!string) {
+            console.log(`WARNING: string product with SKU ${stringSKU} not found! Creating it...`)
+            string = await orderService.add(stringSKU, 100) // Create with starting inventory of 100
+            console.log(`Created string product:`, string)
+        }
+        
         await orderService.updateInventory(begged, -amount)
         await orderService.updateInventory(string, -amount)
         logService.addNewLog({ type: 'Added Tied Begged Inventory', amount: +amount, description: `Updated Begged:${begged.SKU} String:${string.SKU}`, products: [begged, string, product], SKUs: [productSKU, stringSKU, beggedSKU], userName: loggedUser.username })
         res.json(updatedProduct)
     } catch (err) {
+        console.log(`DEBUG updateInventory: Error occurred:`, err.stack)
         logger.error('Failed to update inventory', err)
         res.status(500).send({ err: 'Failed to update inventory' })
     }
@@ -104,11 +136,28 @@ export async function updateInventoryBySKU(req, res) {
     try {
         const productSKU = req.params.SKU
         const { amount, loggedUser } = req.body
+        console.log(`DEBUG updateInventoryBySKU: Looking for product with SKU: ${productSKU}`)
+        console.log(`DEBUG updateInventoryBySKU: loggedUser:`, loggedUser)
+        
         const product = await orderService.getBySKU(productSKU)
+        console.log(`DEBUG updateInventoryBySKU: Product found:`, product ? 'YES' : 'NO')
+        
+        if (!product) {
+            console.log(`DEBUG updateInventoryBySKU: Product with SKU ${productSKU} not found in inventory`)
+            return res.status(404).send({ err: `Product with SKU ${productSKU} not found in inventory` })
+        }
+        
+        console.log(`DEBUG updateInventoryBySKU: About to call updateInventory with product._id:`, product._id)
         const updatedProduct = await orderService.updateInventory(product, +amount)
-        logService.addNewLog({ type: `Added Inventory`, amount: +amount, description: `Updated ${updatedProduct.SKU} - ${updatedProduct['Description-Heb']}`, products: [updatedProduct], SKUs: [updatedProduct.SKU], userName: loggedUser.username })
+        console.log(`DEBUG updateInventoryBySKU: updateInventory completed successfully`)
+        
+        console.log(`DEBUG updateInventoryBySKU: About to add log with loggedUser.username:`, loggedUser?.username)
+        logService.addNewLog({ type: `Added Inventory`, amount: +amount, description: `Updated ${updatedProduct.SKU} - ${updatedProduct['Description-Heb']}`, products: [updatedProduct], SKUs: [updatedProduct.SKU], userName: loggedUser?.username })
+        console.log(`DEBUG updateInventoryBySKU: Log added successfully`)
+        
         res.json(updatedProduct)
     } catch (err) {
+        console.log(`DEBUG updateInventoryBySKU: Error occurred at:`, err.stack)
         logger.error('Failed to update inventory', err)
         res.status(500).send({ err: 'Failed to update inventory' })
     }

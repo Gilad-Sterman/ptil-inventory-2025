@@ -1,5 +1,10 @@
 export const STRING = [
     {
+        code: '00',
+        heb: 'ללא',
+        eng: 'None'
+    },
+    {
         code: '01',
         heb: 'ראבד',
         eng: 'Raavad'
@@ -202,6 +207,31 @@ export const BEGGED = [
         eng: 'David'
     },
     {
+        code: '14',
+        heb: 'ישתבח',
+        eng: 'Yishtabach'
+    },
+    {
+        code: '15',
+        heb: 'מוסף',
+        eng: 'Mussaf'
+    },
+    {
+        code: '16',
+        heb: 'תשבץ',
+        eng: 'Tashbetz'
+    },
+    {
+        code: '17',
+        heb: 'מודים',
+        eng: 'Modim'
+    },
+    {
+        code: '18',
+        heb: 'למנצח',
+        eng: 'Lamenatzeach'
+    },
+    {
         code: '49',
         heb: 'טג - אחר',
         eng: 'TG - Other'
@@ -264,6 +294,11 @@ export const BEGGED = [
 
 ]
 export const TYING = [
+    {
+        code: '00',
+        heb: 'ללא',
+        eng: 'None'
+    },
     {
         code: '01',
         heb: 'חינוך',
@@ -355,11 +390,36 @@ export const TYING = [
         eng: 'Other'
     },
 ]
+
+export const COLOR = [
+    { code: '50', heb: 'שחור', eng: 'Black' },
+    { code: '51', heb: 'לבן בית יוסף', eng: 'White Bet Yosef' },
+    { code: '52', heb: 'תכלת', eng: 'Techelet' },
+    { code: '53', heb: 'לבן כסף', eng: 'White Silver' },
+    { code: '54', heb: 'לבן מבריק', eng: 'White Shiny' },
+    { code: '55', heb: 'כחול כסף', eng: 'Blue Silver' },
+    { code: '56', heb: 'ג\'ינס', eng: 'Jeans' },
+    { code: '57', heb: 'כחול ליבי', eng: 'Navy Blue' },
+    { code: '58', heb: 'כחול', eng: 'Blue' },
+    { code: '59', heb: 'כחול זהב', eng: 'Blue Gold' },
+    { code: '60', heb: 'חום', eng: 'Brown' },
+    { code: '61', heb: 'ברדו', eng: 'Bordeaux' },
+    { code: '62', heb: 'אפור', eng: 'Grey' }
+]
+
+// Talit Gadol product codes that support colors
+export const TG_CODES = ['07', '14', '15', '16', '17', '18']
+
 export const TG = {
     codes: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '49'],
-    sizes: ['45', '50', '55', '60', '70', '80']
+    sizes: ['45', '50', '55', '60', '70', '80'],
+    colors: ['50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62']
 }
 export const TK = {
     codes: ['50', '51', '52', '53', '54', '55', '56', '57', '58', '60', '99'],
     sizes: ['04', '05', '06', '07', '08', '09']
+}
+
+export function isTalitGadol(beggedCode) {
+    return TG_CODES.includes(beggedCode)
 }
