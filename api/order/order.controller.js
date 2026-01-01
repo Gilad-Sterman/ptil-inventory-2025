@@ -20,7 +20,11 @@ export async function getOrders(req, res) {
     try {
         const filterBy = {
             from: from ? new Date(from) : null,
-            to: to ? new Date(to) : null,
+            to: to ? (() => {
+                const toDate = new Date(to)
+                toDate.setHours(23, 59, 59, 999) // Set to end of day
+                return toDate
+            })() : null,
             maxNum: (maxNum === 'true') ? true : false,
             sortBy: sortBy,
             txt,
@@ -338,6 +342,46 @@ export async function getSetsSalesByMonthAndStore(req, res) {
     } catch (err) {
         logger.error('Failed to get sets sales by month and store', err)
         res.status(500).send({ err: 'Failed to get sets sales by month and store' })
+    }
+}
+
+export async function getBeggedFromDataCodes(req, res) {
+    try {
+        const beggedData = await orderService.getBeggedFromDataCodes()
+        res.json(beggedData)
+    } catch (err) {
+        logger.error('Failed to get begged from MongoDataCodes', err)
+        res.status(500).send({ err: 'Failed to get begged from MongoDataCodes' })
+    }
+}
+
+export async function getColorsForBegged(req, res) {
+    try {
+        const beggedCode = req.query.beggedCode
+        if (!beggedCode) {
+            return res.status(400).send({ err: 'beggedCode parameter is required' })
+        }
+        
+        const colorsData = await orderService.getColorsForBegged(beggedCode)
+        res.json(colorsData)
+    } catch (err) {
+        logger.error('Failed to get colors for begged from MongoDataCodes', err)
+        res.status(500).send({ err: 'Failed to get colors for begged from MongoDataCodes' })
+    }
+}
+
+export async function getSizesForBegged(req, res) {
+    try {
+        const beggedCode = req.query.beggedCode
+        if (!beggedCode) {
+            return res.status(400).send({ err: 'beggedCode parameter is required' })
+        }
+        
+        const sizesData = await orderService.getSizesForBegged(beggedCode)
+        res.json(sizesData)
+    } catch (err) {
+        logger.error('Failed to get sizes for begged from MongoDataCodes', err)
+        res.status(500).send({ err: 'Failed to get sizes for begged from MongoDataCodes' })
     }
 }
 

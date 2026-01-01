@@ -1,6 +1,6 @@
 import express from 'express'
 import { requireAuth, requireAdmin } from '../../middlewares/requireAuth.middleware.js'
-import { getOrders, getOrderById, getproductsByType, getproductSizes, getproductColors, updateInventory, updateInventoryBySKU, addNewProduct, updateBulkInventory, icountInfo, getSetProductionDailyStats, getSetProductionTypeStats, getSetProductionMonthlyTotal, getDyePowderInventory, getSalesByMonthAndStore, getSetsSalesByMonthAndStore } from './order.controller.js'
+import { getOrders, getOrderById, getproductsByType, getproductSizes, getproductColors, updateInventory, updateInventoryBySKU, addNewProduct, updateBulkInventory, icountInfo, getSetProductionDailyStats, getSetProductionTypeStats, getSetProductionMonthlyTotal, getDyePowderInventory, getSalesByMonthAndStore, getSetsSalesByMonthAndStore, getBeggedFromDataCodes, getColorsForBegged, getSizesForBegged } from './order.controller.js'
 
 export const orderRoutes = express.Router()
 
@@ -26,4 +26,9 @@ orderRoutes.get('/dye-powder/inventory', getDyePowderInventory)
 // Sales analytics routes
 orderRoutes.get('/sales/by-month-store', getSalesByMonthAndStore)
 orderRoutes.get('/sets/by-month-store', getSetsSalesByMonthAndStore)
+
+// MongoDataCodes routes
+orderRoutes.get('/datacodes/begged', getBeggedFromDataCodes)
+orderRoutes.get('/datacodes/colors', getColorsForBegged)
+orderRoutes.get('/datacodes/sizes', getSizesForBegged)
 

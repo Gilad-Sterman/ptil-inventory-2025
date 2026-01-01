@@ -40,10 +40,10 @@ async function query(filterBy = { txt: '' }) {
                                         { 'SKU': { '$not': { '$regex': new RegExp('^10000') } } },
                                         { 'SKU': { '$not': { '$regex': new RegExp('0000$') } } }]
                                 },
-                                { 'SKU': { '$regex': new RegExp('000000$') } }]
+                                { 'SKU': { '$regex': new RegExp('0000.{2}$') } }]
                         }
                     }
-                    if (moreCategories.includes('untied')) return { SKU: { $regex: new RegExp('000000$') } }
+                    if (moreCategories.includes('untied')) return { SKU: { $regex: new RegExp('0000.{2}$') } }
                     return {
                         '$and': [
                             { 'SKU': { '$not': { '$regex': new RegExp('^10000') } } },
@@ -72,7 +72,7 @@ async function query(filterBy = { txt: '' }) {
 
             if (specificCodes.strings && moreCategories?.includes('tied')) {
                 const codesArr = specificCodes.strings.map(string => {
-                    return { SKU: { $regex: new RegExp(`^.{5}${string}.{2}00$`) } }
+                    return { SKU: { $regex: new RegExp(`^.{5}${string}.{2}.{2}$`) } }
                 })
                 // console.log(codesArr);
                 criteria['$and'].push({ $or: codesArr })
@@ -80,7 +80,7 @@ async function query(filterBy = { txt: '' }) {
 
             if (specificCodes.tying && moreCategories?.includes('tied')) {
                 const codesArr = specificCodes.tying.map(tie => {
-                    return { SKU: { $regex: new RegExp(`^.{7}${tie}00$`) } }
+                    return { SKU: { $regex: new RegExp(`^.{7}${tie}.{2}$`) } }
                 })
                 // console.log(codesArr);
                 criteria['$and'].push({ $or: codesArr })
@@ -279,12 +279,12 @@ async function add(productSKU, amount) {
     const tyingHeb = tyingItem.heb
     const tyingEng = tyingItem.eng
     
-    // Handle color for TG products only (but not for base products with 0000 strings/tying)
+    // Handle color for TG products only
     const colorCode = productSKU.substring(9, 11)
     const isBaseProduct = stringCode === '00' && tyingCode === '00'
     let colorHeb = '', colorEng = ''
     
-    if (isTalitGadol(beggedCode) && colorCode !== '00' && !isBaseProduct) {
+    if (isTalitGadol(beggedCode) && colorCode !== '00') {
         const colorInfo = COLOR.find(color => color.code === colorCode)
         if (colorInfo) {
             colorHeb = ` - ${colorInfo.heb}`
@@ -293,10 +293,22 @@ async function add(productSKU, amount) {
     }
 
     try {
+        let descriptionHeb, descriptionEng
+        
+        if (isBaseProduct) {
+            // Base products: just begged + color + size
+            descriptionHeb = `${beggedHeb}${colorHeb}: ${sizeCode}`
+            descriptionEng = `${beggedEng}${colorEng}: ${sizeCode}`
+        } else {
+            // Full products: include strings and tying
+            descriptionHeb = `${beggedHeb}${colorHeb}: ${sizeCode} : ${stringHeb} : ${tyingHeb}`
+            descriptionEng = `${beggedEng}${colorEng}: ${sizeCode} : ${stringEng} : ${tyingEng}`
+        }
+        
         const productToAdd = {
             SKU: productSKU,
-            'Description-Heb': `${beggedHeb}${colorHeb}: ${sizeCode} : ${stringHeb} : ${tyingHeb}`,
-            'Description-Eng': `${beggedEng}${colorEng}: ${sizeCode} : ${stringEng} : ${tyingEng}`,
+            'Description-Heb': descriptionHeb,
+            'Description-Eng': descriptionEng,
             'Inventory': amount,
             'Cost': -0.1,
             'Price': -0.1,
@@ -692,5 +704,102 @@ export const orderService = {
     addNewProduct,
     getDyePowderInventory,
     getSalesByMonthAndStore,
-    getSetsSalesByMonthAndStore
+    getSetsSalesByMonthAndStore,
+    getBeggedFromDataCodes,
+    getColorsForBegged,
+    getSizesForBegged
+}
+
+async function getBeggedFromDataCodes() {
+    try {
+        const collection = await dbService.getCollection('MongoDataCodes')
+        
+        // Get ALL begged entries, not just TG
+        const allBeggedEntries = await collection.find({ Type: 'beged' }).toArray()
+        
+        // Format for frontend consumption - include ALL begged types
+        // Filter out entries with empty item-Heb field
+        const formattedBegged = allBeggedEntries
+            .filter(entry => entry['item-Heb'] && entry['item-Heb'].trim() !== '')
+            .map(entry => ({
+                code: entry.Code.toString().padStart(2, '0'), // Ensure 2-digit format
+                heb: entry['item-Heb'],
+                eng: entry['Item-Eng'] || entry['item-Eng'], // Handle both field name variations
+                isTG: entry.isTG || false, // Will be true for TG products once you add the field
+                availableColors: entry.availableColors || []
+            }))
+        return formattedBegged
+    } catch (err) {
+        logger.error('cannot get begged from MongoDataCodes', err)
+        throw err
+    }
+}
+
+async function getColorsForBegged(beggedCode) {
+    try {
+        const collection = await dbService.getCollection('MongoDataCodes')
+        
+        // First get the begged entry to find available colors
+        const beggedEntry = await collection.findOne({ 
+            Type: 'beged', 
+            Code: parseInt(beggedCode),
+            isTG: true
+        })
+        
+        if (!beggedEntry || !beggedEntry.availableColors) {
+            return []
+        }
+        
+        // Get color details for available color codes
+        // Convert string codes to numbers for the query
+        const colorCodesAsNumbers = beggedEntry.availableColors.map(code => parseInt(code))
+        
+        const colorEntries = await collection.find({
+            Type: 'color',
+            Code: { $in: colorCodesAsNumbers }
+        }).toArray()
+        
+        // Format for frontend consumption
+        const formattedColors = colorEntries.map(entry => ({
+            code: entry.Code.toString().padStart(2, '0'), // Ensure 2-digit format
+            heb: entry['item-Heb'],
+            eng: entry['Item-Eng'] || entry['item-Eng']
+        }))
+        return formattedColors
+    } catch (err) {
+        logger.error('cannot get colors for begged from MongoDataCodes', err)
+        throw err
+    }
+}
+
+async function getSizesForBegged(beggedCode) {
+    try {
+        const collection = await dbService.getCollection('MongoDataCodes')
+        
+        // Get the begged entry to check if it has predefined sizes
+        const beggedEntry = await collection.findOne({ 
+            Type: 'beged', 
+            Code: parseInt(beggedCode)
+        })
+        
+        if (beggedEntry && beggedEntry.availableSizes) {
+            // Use predefined sizes from MongoDataCodes
+            return beggedEntry.availableSizes.map(size => size.toString().padStart(2, '0'))
+        }
+        
+        // Fallback: Use hardcoded size arrays based on product type
+        const TG_CODES = [7, 14, 15, 16, 17, 18]
+        const TK_CODES = [50, 51, 52, 53, 54, 55, 56, 57, 58, 60, 99]
+        
+        if (TG_CODES.includes(parseInt(beggedCode))) {
+            return ['45', '50', '55', '60', '70', '80']
+        } else if (TK_CODES.includes(parseInt(beggedCode))) {
+            return ['16', '18', '22', '24', '26']
+        } else {
+            return ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09']
+        }
+    } catch (err) {
+        logger.error('cannot get sizes for begged from MongoDataCodes', err)
+        throw err
+    }
 }
