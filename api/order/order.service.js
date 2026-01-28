@@ -34,20 +34,30 @@ async function query(filterBy = { txt: '' }) {
                 if (category === 'begaddim') {
                     if (!moreCategories || moreCategories.length > 1) {
                         return {
-                            '$or': [
-                                {
-                                    '$and': [
-                                        { 'SKU': { '$not': { '$regex': new RegExp('^10000') } } },
-                                        { 'SKU': { '$not': { '$regex': new RegExp('0000$') } } }]
-                                },
-                                { 'SKU': { '$regex': new RegExp('0000.{2}$') } }]
+                            '$and': [
+                                { 'SKU': { '$not': { '$regex': new RegExp('^10000') } } }, // Not strings
+                                { 'SKU': { '$not': { '$regex': new RegExp('^100[0-9]{2}') } } }, // Not other products
+                                { 'SKU': { '$not': { '$regex': new RegExp('0000$') } } }, // Not pure strings
+                                { 'SKU': { '$regex': new RegExp('^1[0-9]{2}[0-9]{2}') } } // Starts with 1 + begged code + size
+                            ]
                         }
                     }
-                    if (moreCategories.includes('untied')) return { SKU: { $regex: new RegExp('0000.{2}$') } }
+                    if (moreCategories.includes('untied')) {
+                        return {
+                            '$or': [
+                                { 'SKU': { '$regex': new RegExp('^1[0-9]{2}[0-9]{2}000000$') } }, // Old untied: ends with 000000
+                                { 'SKU': { '$regex': new RegExp('^1[0-9]{2}[0-9]{2}0000[5-6][0-9]$') } } // New TG untied: ends with 0000 + color
+                            ]
+                        }
+                    }
                     return {
                         '$and': [
-                            { 'SKU': { '$not': { '$regex': new RegExp('^10000') } } },
-                            { 'SKU': { '$not': { '$regex': new RegExp('0000$') } } }
+                            { 'SKU': { '$not': { '$regex': new RegExp('^10000') } } }, // Not strings
+                            { 'SKU': { '$not': { '$regex': new RegExp('^100[0-9]{2}') } } }, // Not other products
+                            { 'SKU': { '$not': { '$regex': new RegExp('0000$') } } }, // Not pure strings
+                            { 'SKU': { '$regex': new RegExp('^1[0-9]{2}[0-9]{2}') } }, // Starts with 1 + begged code + size
+                            { 'SKU': { '$not': { '$regex': new RegExp('^1[0-9]{2}[0-9]{2}000000$') } } }, // Not old untied
+                            { 'SKU': { '$not': { '$regex': new RegExp('^1[0-9]{2}[0-9]{2}0000[5-6][0-9]$') } } } // Not new TG untied
                         ]
                     }
                 }
@@ -58,7 +68,9 @@ async function query(filterBy = { txt: '' }) {
         if (specificCodes && categories) {
             if (specificCodes.begged && categories.includes('begaddim')) {
                 const codesArr = specificCodes.begged.map(begged => {
-                    return { SKU: { $regex: new RegExp(`^1${begged}`) } }
+                    // Ensure begged code is padded to 2 digits
+                    const paddedCode = begged.toString().padStart(2, '0')
+                    return { SKU: { $regex: new RegExp(`^1${paddedCode}`) } }
                 })
                 criteria['$and'].push({ $or: codesArr })
             }
@@ -707,7 +719,9 @@ export const orderService = {
     getSetsSalesByMonthAndStore,
     getBeggedFromDataCodes,
     getColorsForBegged,
-    getSizesForBegged
+    getSizesForBegged,
+    getSizesForBeggedAndColor,
+    createProductFromSKU
 }
 
 async function getBeggedFromDataCodes() {
@@ -735,7 +749,7 @@ async function getBeggedFromDataCodes() {
     }
 }
 
-async function getColorsForBegged(beggedCode) {
+async function getColorsForBegged(beggedCode, sizeCode = null) {
     try {
         const collection = await dbService.getCollection('MongoDataCodes')
         
@@ -750,9 +764,25 @@ async function getColorsForBegged(beggedCode) {
             return []
         }
         
+        let availableColorCodes = beggedEntry.availableColors
+        
+        // If size is provided and colorSizeMatrix exists, filter colors by size
+        if (sizeCode && beggedEntry.colorSizeMatrix) {
+            availableColorCodes = []
+            for (const [colorCode, sizes] of Object.entries(beggedEntry.colorSizeMatrix)) {
+                if (sizes.includes(sizeCode)) {
+                    availableColorCodes.push(colorCode)
+                }
+            }
+        }
+        
+        if (availableColorCodes.length === 0) {
+            return []
+        }
+        
         // Get color details for available color codes
         // Convert string codes to numbers for the query
-        const colorCodesAsNumbers = beggedEntry.availableColors.map(code => parseInt(code))
+        const colorCodesAsNumbers = availableColorCodes.map(code => parseInt(code))
         
         const colorEntries = await collection.find({
             Type: 'color',
@@ -800,6 +830,109 @@ async function getSizesForBegged(beggedCode) {
         }
     } catch (err) {
         logger.error('cannot get sizes for begged from MongoDataCodes', err)
+        throw err
+    }
+}
+
+async function getSizesForBeggedAndColor(beggedCode, colorCode) {
+    try {
+        const collection = await dbService.getCollection('MongoDataCodes')
+        
+        // Get the begged entry to check if it has colorSizeMatrix
+        const beggedEntry = await collection.findOne({ 
+            Type: 'beged', 
+            Code: parseInt(beggedCode)
+        })
+        
+        if (beggedEntry && beggedEntry.colorSizeMatrix && beggedEntry.colorSizeMatrix[colorCode]) {
+            // Use sizes from colorSizeMatrix for this specific color
+            return beggedEntry.colorSizeMatrix[colorCode].map(size => size.toString().padStart(2, '0'))
+        }
+        
+        // Fallback to regular getSizesForBegged if no colorSizeMatrix
+        return await getSizesForBegged(beggedCode)
+        
+    } catch (err) {
+        logger.error('cannot get sizes for begged and color from MongoDataCodes', err)
+        throw err
+    }
+}
+
+async function createProductFromSKU(productSKU, initialAmount = 0) {
+    try {
+        const { COLOR, isTalitGadol } = await import('../../services/info.service.js')
+        
+        // Parse SKU: format is like 11880000056 (1-18-80-0000-56)
+        if (productSKU.length !== 11) {
+            throw new Error(`Invalid SKU format: ${productSKU}`)
+        }
+        
+        const productType = productSKU.charAt(0) // 1 = begged
+        const productCode = productSKU.substring(1, 3) // 18 = Lamenatzeach
+        const sizeCode = productSKU.substring(3, 5) // 80 = size
+        const stringCode = productSKU.substring(5, 7) // 00 = no strings
+        const tyingCode = productSKU.substring(7, 9) // 00 = no tying
+        const colorCode = productSKU.substring(9, 11) // 56 = Jeans
+        
+        if (productType !== '1') {
+            throw new Error(`Only begged products (type 1) can be auto-created from SKU`)
+        }
+        
+        // Get product details from MongoDataCodes
+        const collection = await dbService.getCollection('MongoDataCodes')
+        
+        const beggedEntry = await collection.findOne({ 
+            Type: 'beged', 
+            Code: parseInt(productCode)
+        })
+        
+        if (!beggedEntry) {
+            throw new Error(`Product code ${productCode} not found in MongoDataCodes`)
+        }
+        
+        // Get color details
+        const colorEntry = await collection.findOne({
+            Type: 'color',
+            Code: parseInt(colorCode)
+        })
+        
+        if (!colorEntry) {
+            throw new Error(`Color code ${colorCode} not found in MongoDataCodes`)
+        }
+        
+        // Generate product description
+        const baseHeb = beggedEntry['item-Heb']
+        const baseEng = beggedEntry['Item-Eng']
+        const colorHeb = colorEntry['item-Heb']
+        const colorEng = colorEntry['Item-Eng'] || colorEntry['item-Eng']
+        
+        const descriptionHeb = isTalitGadol(productCode) ? `${baseHeb} - ${colorHeb}: ${sizeCode}` : baseHeb
+        const descriptionEng = isTalitGadol(productCode) ? `${baseEng} - ${colorEng}: ${sizeCode}` : baseEng
+        
+        // Create new product object
+        const newProduct = {
+            SKU: productSKU,
+            'Description-Heb': descriptionHeb,
+            'Description-Eng': descriptionEng,
+            Cost: 0,
+            Price: 0,
+            USDPrice: 0,
+            Inventory: initialAmount,
+            MinimumLevel: 0,
+            Location: '',
+            SortOrder: 0,
+            LastUpdate: new Date()
+        }
+        
+        // Insert into database
+        const inventoryCollection = await dbService.getCollection('inventory')
+        const result = await inventoryCollection.insertOne(newProduct)
+        
+        // Return the created product with _id
+        return { ...newProduct, _id: result.insertedId }
+        
+    } catch (err) {
+        logger.error('cannot create product from SKU', err)
         throw err
     }
 }

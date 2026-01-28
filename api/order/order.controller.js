@@ -115,7 +115,7 @@ export async function updateInventory(req, res) {
         
         if (!begged) {
             console.log(`WARNING: begged product with SKU ${beggedSKU} not found! Creating it...`)
-            begged = await orderService.add(beggedSKU, 100) // Create with starting inventory of 100
+            begged = await orderService.add(beggedSKU, 0) // Create base component with 0 inventory
             console.log(`Created begged product:`, begged)
         }
         
@@ -147,8 +147,19 @@ export async function updateInventoryBySKU(req, res) {
         console.log(`DEBUG updateInventoryBySKU: Product found:`, product ? 'YES' : 'NO')
         
         if (!product) {
-            console.log(`DEBUG updateInventoryBySKU: Product with SKU ${productSKU} not found in inventory`)
-            return res.status(404).send({ err: `Product with SKU ${productSKU} not found in inventory` })
+            console.log(`DEBUG updateInventoryBySKU: Product with SKU ${productSKU} not found, attempting to create it`)
+            try {
+                // Generate product from SKU and create it
+                const newProduct = await orderService.createProductFromSKU(productSKU, +amount)
+                console.log(`DEBUG updateInventoryBySKU: New product created successfully:`, newProduct.SKU)
+                
+                logService.addNewLog({ type: `Added Inventory`, amount: +amount, description: `Created and added ${newProduct.SKU} - ${newProduct['Description-Heb']}`, products: [newProduct], SKUs: [newProduct.SKU], userName: loggedUser?.username })
+                
+                return res.json(newProduct)
+            } catch (createErr) {
+                console.log(`DEBUG updateInventoryBySKU: Failed to create product from SKU:`, createErr.message)
+                return res.status(404).send({ err: `Product with SKU ${productSKU} not found and could not be created: ${createErr.message}` })
+            }
         }
         
         console.log(`DEBUG updateInventoryBySKU: About to call updateInventory with product._id:`, product._id)
@@ -357,12 +368,12 @@ export async function getBeggedFromDataCodes(req, res) {
 
 export async function getColorsForBegged(req, res) {
     try {
-        const beggedCode = req.query.beggedCode
+        const { beggedCode, sizeCode } = req.query
         if (!beggedCode) {
             return res.status(400).send({ err: 'beggedCode parameter is required' })
         }
         
-        const colorsData = await orderService.getColorsForBegged(beggedCode)
+        const colorsData = await orderService.getColorsForBegged(beggedCode, sizeCode)
         res.json(colorsData)
     } catch (err) {
         logger.error('Failed to get colors for begged from MongoDataCodes', err)
@@ -381,6 +392,21 @@ export async function getSizesForBegged(req, res) {
         res.json(sizesData)
     } catch (err) {
         logger.error('Failed to get sizes for begged from MongoDataCodes', err)
+        res.status(500).send({ err: 'Failed to get sizes for begged' })
+    }
+}
+
+export async function getSizesForBeggedAndColor(req, res) {
+    try {
+        const { beggedCode, colorCode } = req.query
+        if (!beggedCode || !colorCode) {
+            return res.status(400).send({ err: 'beggedCode and colorCode parameters are required' })
+        }
+        
+        const sizesData = await orderService.getSizesForBeggedAndColor(beggedCode, colorCode)
+        res.json(sizesData)
+    } catch (err) {
+        logger.error('Failed to get sizes for begged and color from MongoDataCodes', err)
         res.status(500).send({ err: 'Failed to get sizes for begged from MongoDataCodes' })
     }
 }
