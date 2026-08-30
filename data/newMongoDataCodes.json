@@ -1,0 +1,26 @@
+[
+  {
+    "Type": "beged",
+    "Code": 19,
+    "item-Heb": "הללויה",
+    "Item-Eng": "Hallelujah",
+    "isTG": true,
+    "availableColors": ["50", "58"],
+    "availableSizes": ["45", "50", "55", "60", "70", "80"]
+  },
+  {
+    "Type": "beged",
+    "Code": 20,
+    "item-Heb": "הלל",
+    "Item-Eng": "Hallel",
+    "isTG": true,
+    "availableColors": ["58", "61", "62", "63"],
+    "availableSizes": ["45", "50", "55", "60", "70", "80"]
+  },
+  {
+    "Type": "color",
+    "Code": 63,
+    "item-Heb": "ירוק",
+    "Item-Eng": "Green"
+  }
+]

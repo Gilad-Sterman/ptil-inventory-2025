@@ -135,6 +135,16 @@ export const STRING = [
         eng: 'Rambam 7 Thick Niputz'
     },
     {
+        code: '30',
+        heb: 'פתיל ראבד מוסיפין',
+        eng: 'Strings Raavad Mosifin'
+    },
+    {
+        code: '31',
+        heb: 'פתיל ראבד מוסיפין עבה',
+        eng: 'Strings Raavad Mosifin Thick'
+    },
+    {
         code: '99',
         heb: 'אחר',
         eng: 'Other'
@@ -230,6 +240,16 @@ export const BEGGED = [
         code: '18',
         heb: 'למנצח',
         eng: 'Lamenatzeach'
+    },
+    {
+        code: '19',
+        heb: 'הללויה',
+        eng: 'Hallelujah'
+    },
+    {
+        code: '20',
+        heb: 'הלל',
+        eng: 'Hallel'
     },
     {
         code: '49',
@@ -404,16 +424,17 @@ export const COLOR = [
     { code: '59', heb: 'כחול זהב', eng: 'Blue Gold' },
     { code: '60', heb: 'חום', eng: 'Brown' },
     { code: '61', heb: 'ברדו', eng: 'Bordeaux' },
-    { code: '62', heb: 'אפור', eng: 'Grey' }
+    { code: '62', heb: 'אפור', eng: 'Grey' },
+    { code: '63', heb: 'ירוק', eng: 'Green' }
 ]
 
 // Talit Gadol product codes that support colors
-export const TG_CODES = ['07', '14', '15', '16', '17', '18']
+export const TG_CODES = ['07', '14', '15', '16', '17', '18', '19', '20']
 
 export const TG = {
     codes: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '49'],
     sizes: ['45', '50', '55', '60', '70', '80'],
-    colors: ['50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62']
+    colors: ['50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63']
 }
 export const TK = {
     codes: ['50', '51', '52', '53', '54', '55', '56', '57', '58', '60', '99'],

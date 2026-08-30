@@ -179,25 +179,25 @@ async function getSizes(type, code) {
 
 async function getColors(begged, size) {
     try {
-        // Only get colors for TG products that have both begged and size
-        if (!isTalitGadol(begged) || !begged || !size) {
+        if (!isTalitGadol(begged) || !begged) {
             return []
         }
         
-        // Find products that match begged and size pattern, regardless of strings/tying, with color codes (not 00)
-        const criteria = {
-            SKU: { 
-                $regex: new RegExp(`^1${begged}${size}.{4}[5-6][0-9]$`) 
+        if (size) {
+            // Try inventory first — works for existing products that already have colored inventory
+            const criteria = {
+                SKU: { $regex: new RegExp(`^1${begged}${size}.{4}[5-6][0-9]$`) }
             }
+            const collection = await dbService.getCollection('inventory')
+            const products = await collection.find(criteria).toArray()
+            const colorCodes = [...new Set(products.map(product => product.SKU.slice(-2)))]
+            if (colorCodes.length > 0) return colorCodes
         }
         
-        const collection = await dbService.getCollection('inventory')
-        let products = await collection.find(criteria).toArray()
-        
-        // Extract unique color codes from the last 2 digits of SKU
-        const colorCodes = [...new Set(products.map(product => product.SKU.slice(-2)))]
-        
-        return colorCodes
+        // Fallback to MongoDataCodes — works for new products with no inventory yet,
+        // and also when no size is provided yet
+        const colorObjects = await getColorsForBegged(begged, size || null)
+        return colorObjects.map(c => c.code)
     } catch (err) {
         logger.error('cannot find colors', err)
         throw err
@@ -394,7 +394,7 @@ async function getData(sku) {
                 const colorCode = parseInt(sku.substring(9, 11))
                 console.log(`DEBUG getData: TG product detected. SKU: ${sku}, beggedCode: ${beggedCode}, colorCode: ${colorCode}`)
                 
-                if (colorCode >= 50 && colorCode <= 62) {
+                if (colorCode >= 50 && colorCode <= 65) {
                     console.log(`DEBUG getData: Looking for color with Code: ${colorCode}`)
                     cName = await collection.findOne({ '$and': [{ Type: 'color' }, { Code: colorCode }] })
                     console.log(`DEBUG getData: Color lookup result:`, cName)
@@ -818,7 +818,7 @@ async function getSizesForBegged(beggedCode) {
         }
         
         // Fallback: Use hardcoded size arrays based on product type
-        const TG_CODES = [7, 14, 15, 16, 17, 18]
+        const TG_CODES = [7, 14, 15, 16, 17, 18, 19, 20]
         const TK_CODES = [50, 51, 52, 53, 54, 55, 56, 57, 58, 60, 99]
         
         if (TG_CODES.includes(parseInt(beggedCode))) {
