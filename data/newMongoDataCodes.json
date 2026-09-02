@@ -1,12 +1,146 @@
 [
   {
     "Type": "beged",
+    "Code": 7,
+    "item-Heb": "ספיר",
+    "Item-Eng": "Sapir",
+    "isTG": true,
+    "availableColors": [
+      "52"
+    ],
+    "availableSizes": [
+      "50",
+      "55",
+      "60",
+      "70"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 11,
+    "item-Heb": "א.א.פס כחול",
+    "Item-Eng": "Basic Blue",
+    "isTG": true,
+    "availableColors": [
+      "64"
+    ],
+    "availableSizes": [
+      "45",
+      "50",
+      "55",
+      "60",
+      "70",
+      "80"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 14,
+    "item-Heb": "ישתבח",
+    "Item-Eng": "Yishtabach",
+    "isTG": true,
+    "availableColors": [
+      "50",
+      "51",
+      "52",
+      "54",
+      "57"
+    ],
+    "availableSizes": [
+      "50",
+      "55",
+      "60",
+      "70",
+      "80"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 15,
+    "item-Heb": "מוסף",
+    "Item-Eng": "Mussaf",
+    "isTG": true,
+    "availableColors": [
+      "50",
+      "51",
+      "57"
+    ],
+    "availableSizes": [
+      "55",
+      "60",
+      "70",
+      "80"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 16,
+    "item-Heb": "תשבץ",
+    "Item-Eng": "Tashbetz",
+    "isTG": true,
+    "availableColors": [
+      "50",
+      "54",
+      "55"
+    ],
+    "availableSizes": [
+      "50",
+      "55",
+      "60",
+      "70"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 17,
+    "item-Heb": "מודים",
+    "Item-Eng": "Modim",
+    "isTG": true,
+    "availableColors": [
+      "50",
+      "54"
+    ],
+    "availableSizes": [
+      "45",
+      "50",
+      "55",
+      "60",
+      "70",
+      "80"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 18,
+    "item-Heb": "למנצח",
+    "Item-Eng": "Lamenatzeach",
+    "isTG": true,
+    "availableColors": [
+      "52",
+      "56"
+    ],
+    "availableSizes": [
+      "45",
+      "50",
+      "55",
+      "60",
+      "70",
+      "80"
+    ]
+  },
+  {
+    "Type": "beged",
     "Code": 19,
     "item-Heb": "הללויה",
     "Item-Eng": "Hallelujah",
     "isTG": true,
-    "availableColors": ["50", "58"],
-    "availableSizes": ["45", "50", "55", "60", "70", "80"]
+    "availableColors": [
+      "58"
+    ],
+    "availableSizes": [
+      "60",
+      "70"
+    ]
   },
   {
     "Type": "beged",
@@ -14,13 +148,217 @@
     "item-Heb": "הלל",
     "Item-Eng": "Hallel",
     "isTG": true,
-    "availableColors": ["58", "61", "62", "63"],
-    "availableSizes": ["45", "50", "55", "60", "70", "80"]
+    "availableColors": [
+      "62",
+      "63",
+      "64"
+    ],
+    "availableSizes": [
+      "50",
+      "55",
+      "60",
+      "70"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 50,
+    "item-Heb": "גופיה כותנה",
+    "Item-Eng": "TankTop Cotton",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "02",
+      "04",
+      "06",
+      "08",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20",
+      "24",
+      "26",
+      "28"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 51,
+    "item-Heb": "גופיה צמר",
+    "Item-Eng": "TankTop Wool",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "18",
+      "20",
+      "24",
+      "26"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 53,
+    "item-Heb": "כותנה",
+    "Item-Eng": "Cotton",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "02",
+      "04",
+      "06",
+      "08",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20",
+      "22",
+      "24",
+      "26"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 54,
+    "item-Heb": "צמר לבן",
+    "Item-Eng": "Wool White",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "16",
+      "18",
+      "20",
+      "22",
+      "24",
+      "26",
+      "28"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 56,
+    "item-Heb": "צמר שחור",
+    "Item-Eng": "Wool Black",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "16",
+      "18",
+      "20",
+      "22",
+      "24",
+      "26",
+      "28"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 58,
+    "item-Heb": "רשת",
+    "Item-Eng": "Net",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "18",
+      "20",
+      "22"
+    ]
+  },
+  {
+    "Type": "beged",
+    "Code": 60,
+    "item-Heb": "גופיה ירוקה",
+    "Item-Eng": "TankTop Green",
+    "isTG": false,
+    "availableColors": [
+      "00"
+    ],
+    "availableSizes": [
+      "18",
+      "20",
+      "24",
+      "26"
+    ]
+  },
+  {
+    "Type": "color",
+    "Code": 50,
+    "item-Heb": "שחור",
+    "Item-Eng": "Black"
+  },
+  {
+    "Type": "color",
+    "Code": 51,
+    "item-Heb": "לבן בית יוסף",
+    "Item-Eng": "White Bet Yosef"
+  },
+  {
+    "Type": "color",
+    "Code": 52,
+    "item-Heb": "תכלת",
+    "Item-Eng": "Techelet"
+  },
+  {
+    "Type": "color",
+    "Code": 54,
+    "item-Heb": "לבן מבריק",
+    "Item-Eng": "White Shiny"
+  },
+  {
+    "Type": "color",
+    "Code": 55,
+    "item-Heb": "כחול כסף",
+    "Item-Eng": "Blue Silver"
+  },
+  {
+    "Type": "color",
+    "Code": 56,
+    "item-Heb": "ג'ינס",
+    "Item-Eng": "Jeans"
+  },
+  {
+    "Type": "color",
+    "Code": 57,
+    "item-Heb": "כחול ליבי",
+    "Item-Eng": "Navy Blue"
+  },
+  {
+    "Type": "color",
+    "Code": 58,
+    "item-Heb": "כחול",
+    "Item-Eng": "Blue"
+  },
+  {
+    "Type": "color",
+    "Code": 62,
+    "item-Heb": "אפור",
+    "Item-Eng": "Grey"
   },
   {
     "Type": "color",
     "Code": 63,
     "item-Heb": "ירוק",
     "Item-Eng": "Green"
+  },
+  {
+    "Type": "color",
+    "Code": 64,
+    "item-Heb": "כחול רויאל",
+    "Item-Eng": "Royal Blue"
   }
 ]
