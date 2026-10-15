@@ -22,7 +22,9 @@ export async function getOrders(req, res) {
             from: from ? new Date(from) : null,
             to: to ? (() => {
                 const toDate = new Date(to)
-                toDate.setHours(23, 59, 59, 999) // Set to end of day
+                // If the client sent a date-only string, expand it to the end of that UTC day.
+                // If it sent a full ISO timestamp, use it as-is.
+                if (to.length === 10) toDate.setUTCHours(23, 59, 59, 999)
                 return toDate
             })() : null,
             maxNum: (maxNum === 'true') ? true : false,

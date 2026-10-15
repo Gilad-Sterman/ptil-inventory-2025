@@ -9,8 +9,10 @@ import { BEGGED, STRING, TYING, COLOR, isTalitGadol } from '../../services/info.
 async function query(filterBy = { txt: '' }) {
     const { from, to, txt, sortBy, sortDir, maxNum, categories, moreCategories, specificCodes } = filterBy
     try {
+        const fromDate = from ? new Date(from) : new Date('2024-01-01')
+        const toDate = to ? new Date(to) : new Date()
         let criteria = {
-            $and: [{ LastUpdate: { $gt: from, $lt: to } }],
+            $and: [{ LastUpdate: { $gte: fromDate, $lte: toDate } }],
         }
         if (txt) {
             criteria['$and'].push({
